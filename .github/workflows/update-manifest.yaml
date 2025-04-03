@@ -31,5 +31,5 @@ jobs:
                   git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
                   git checkout "$BRANCH_NAME"
                   git add -A
-                  git commit -m "BRANCH_NAME"
+                  git commit -m "test"
                   git push origin "$BRANCH_NAME"
