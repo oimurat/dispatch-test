@@ -20,7 +20,7 @@ jobs:
             - name: Update manifest
               uses: mikefarah/yq@master
               with:
-                  cmd: IMAGE_TAG' nrt.ocir.io/nrcmxxv7sjse/ec_service_test:nodejs-${{ env.GITHUB_SHA }}' yq eval '.deployment.template.frontendImageA = env(IMAGE_TAG)' -i 'oke-test/values.yaml
+                  cmd: IMAGE_TAG=' nrt.ocir.io/nrcmxxv7sjse/ec_service_test:nodejs-${{ env.GITHUB_SHA }}' yq eval '.deployment.template.frontendImageA = env(IMAGE_TAG)' -i oke-test/values.yaml
 
             - name: Commit and Push
               env:
