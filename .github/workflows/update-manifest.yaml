@@ -1,0 +1,35 @@
+name: update-manifest # ワークフロー名を決定
+
+# トリガーの設定
+on:
+    repository_dispatch:
+        types:
+            - update-manifest
+
+jobs:
+    update-manifest:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository # リポジトリのチェックアウト
+              uses: actions/checkout@v4
+
+            - name: Set Env # 環境変数の設定
+              run: |
+                  echo GITHUB__SHA"=${{ github.event.client_payload.sha }}" >> $GITHUB_ENV
+
+            - name: Update manifest
+              uses: mikefarah/yq@master
+              with:
+                  cmd: IMAGE_TAG' nrt.ocir.io/nrcmxxv7sjse/ec_service_test:nodejs-${{ env.GITHUB_SHA }}' yq eval '.deployment.template.frontendImageA = env(IMAGE_TAG)' -i 'oke-test/values.yaml
+
+            - name: Commit and Push
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  BRANCH_NAME="main"
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git checkout "$BRANCH_NAME"
+                  git add -A
+                  gitcommit -m "BRANCH_NAME"
+                  git push origin "$BRANCH_NAME"
