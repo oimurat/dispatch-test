@@ -33,7 +33,7 @@ jobs:
                   BRANCH_NAME="bot/update-manifest--${{ env.GITHUB_SHA }}"
                   git config user.name "github-actions[bot]"
                   git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-                  git checkout  -b "$BRANCH_NAME"
+                  git checkout -b "$BRANCH_NAME"
                   git add -A
                   git commit -m "dispatch commit"
                   git push origin "$BRANCH_NAME"
@@ -51,7 +51,7 @@ jobs:
                   delete-branch: true
 
             - name: auto-merge
-              if: github.event.pull_request.user.login == 'github-actions[bot]'
+              # if: github.event.pull_request.user.login == 'github-actions[bot]'
               env:
                   PR_URL: ${{github.event.pull_request.html_url}}
                   GITHUB_PAT: ${{ secrets.REPO_ACCESS_TOKEN }}
