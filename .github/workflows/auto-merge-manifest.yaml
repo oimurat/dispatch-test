@@ -1,0 +1,61 @@
+name: auto-merge-manifest # ワークフロー名を決定
+
+# トリガーの設定
+on:
+    repository_dispatch:
+        types:
+            - update-manifest
+
+permissions:
+    contents: write
+    pull-requests: write
+
+jobs:
+    update-manifest:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository # リポジトリのチェックアウト
+              uses: actions/checkout@v4
+
+            - name: Set Env # 環境変数の設定
+              run: |
+                  echo GITHUB_SHA"=${{ github.event.client_payload.sha }}" >> $GITHUB_ENV
+
+            - name: Update manifest
+              uses: mikefarah/yq@master
+              with:
+                  cmd: IMAGE_TAG=' nrt.ocir.io/nrcmxxv7sjse/ec_service_test:nodejs-${{ env.GITHUB_SHA }}' yq eval '.deployment.template.frontendImageA = env(IMAGE_TAG)' -i oke-test/values.yaml
+
+            - name: Commit and Push
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  BRANCH_NAME="bot/update-manifest--${{ env.GITHUB_SHA }}"
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git checkout  -b "$BRANCH_NAME"
+                  git add -A
+                  git commit -m "dispatch commit"
+                  git push origin "$BRANCH_NAME"
+                  echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
+
+            - name: Create Pull Request
+              uses: peter-evans/create-pull-request@v7
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  commit-message: "chore: auto update manifest"
+                  title: "chore: auto-update manifest"
+                  body: "This PR was created automatically by GitHub Actions."
+                  branch: ${{ env.branch_name }}
+                  base: main
+                  delete-branch: true
+
+            - name: auto-merge
+              if: github.event.pull_request.user.login == 'github-actions[bot]'
+              env:
+                  PR_URL: ${{github.event.pull_request.html_url}}
+                  GITHUB_PAT: ${{ secrets.REPO_ACCESS_TOKEN }}
+              run: |
+                  run: echo "$GITHUB_PAT" | gh auth login --with-token
+                  gh pr review "$PR_URL" --approve
+                  gh pr merge --merge --auto "$PR_URL"
