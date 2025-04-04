@@ -56,6 +56,6 @@ jobs:
                   PR_URL: ${{github.event.pull_request.html_url}}
                   GITHUB_PAT: ${{ secrets.REPO_ACCESS_TOKEN }}
               run: |
-                  run: echo "$GITHUB_PAT" | gh auth login --with-token
+                  echo "$GITHUB_PAT" | gh auth login --with-token
                   gh pr review "$PR_URL" --approve
                   gh pr merge --merge --auto "$PR_URL"
