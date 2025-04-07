@@ -40,7 +40,7 @@ jobs:
 
             - name: auto-merge
               env:
-                  PR_URL: ${{github.event.pull_request.html_url}}
+                  PR_URL: ${{steps.cpr.outputs.pull-request-url}}
                   GITHUB_PAT: ${{ secrets.REPO_ACCESS_TOKEN }}
               run: |
                   echo "$GITHUB_PAT" | gh auth login --with-token
