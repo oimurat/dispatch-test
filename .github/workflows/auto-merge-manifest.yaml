@@ -26,28 +26,28 @@ jobs:
               with:
                   cmd: IMAGE_TAG=' nrt.ocir.io/nrcmxxv7sjse/ec_service_test:nodejs-${{ env.GITHUB_SHA }}' yq eval '.deployment.template.frontendImageA = env(IMAGE_TAG)' -i oke-test/values.yaml
 
-            - name: Commit and Push
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: |
-                  BRANCH_NAME="bot/update-manifest--${{ env.GITHUB_SHA }}"
-                  git config user.name "github-actions[bot]"
-                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-                  git checkout -b "$BRANCH_NAME"
-                  git add -A
-                  git commit -m "dispatch commit"
-                  git push origin "$BRANCH_NAME"
-                  echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
+            # - name: Commit and Push
+            #   env:
+            #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            #   run: |
+            #       BRANCH_NAME="bot/update-manifest--${{ env.GITHUB_SHA }}"
+            #       git config user.name "github-actions[bot]"
+            #       git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            #       git checkout -b "$BRANCH_NAME"
+            #       git add -A
+            #       git commit -m "dispatch commit"
+            #       git push origin "$BRANCH_NAME"
+            #       echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
 
             - name: Create Pull Request
               id: cpr
               uses: peter-evans/create-pull-request@v7
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  commit-message: "chore: auto update manifest"
-                  title: "chore: auto-update manifest"
+                  commit-message: "auto update manifest"
+                  title: "auto-update manifest"
                   body: "This PR was created automatically by GitHub Actions."
-                  branch: ${{ env.branch_name }}
+                  branch: bot/update-manifest--${{ env.GITHUB_SHA }}
                   base: main
 
             # - name: auto-merge
