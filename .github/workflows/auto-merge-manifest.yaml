@@ -37,7 +37,6 @@ jobs:
                   branch: bot/update-manifest--${{ env.GITHUB_SHA }}
                   base: main
                   delete-branch: true
-                  labels: auto-merge
 
             - name: auto-merge
               env:
