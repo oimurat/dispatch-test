@@ -39,16 +39,16 @@ jobs:
                   git push origin "$BRANCH_NAME"
                   echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
 
-            # - name: Create Pull Request
-            #   id: cpr
-            #   uses: peter-evans/create-pull-request@v7
-            #   with:
-            #       token: ${{ secrets.GITHUB_TOKEN }}
-            #       commit-message: "chore: auto update manifest"
-            #       title: "chore: auto-update manifest"
-            #       body: "This PR was created automatically by GitHub Actions."
-            #       branch: ${{ env.branch_name }}
-            #       base: main
+            - name: Create Pull Request
+              id: cpr
+              uses: peter-evans/create-pull-request@v7
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  commit-message: "chore: auto update manifest"
+                  title: "chore: auto-update manifest"
+                  body: "This PR was created automatically by GitHub Actions."
+                  branch: ${{ env.branch_name }}
+                  base: main
 
             # - name: auto-merge
             #   # if: github.event.pull_request.user.login == 'github-actions[bot]'
