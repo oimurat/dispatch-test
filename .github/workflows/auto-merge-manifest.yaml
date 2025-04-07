@@ -45,4 +45,4 @@ jobs:
               run: |
                   echo "$GITHUB_PAT" | gh auth login --with-token
                   gh pr review "$PR_URL" --approve
-                  gh pr merge --merge --auto "$PR_URL"
+                  gh pr merge --merge --auto --delete-branch "$PR_URL"
