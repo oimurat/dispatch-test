@@ -21,12 +21,12 @@ jobs:
               run: |
                   echo GITHUB_SHA"=${{ github.event.client_payload.sha }}" >> $GITHUB_ENV
 
-            - name: Update manifest
+            - name: Update manifest # マニフェストの更新
               uses: mikefarah/yq@master
               with:
                   cmd: IMAGE_TAG=' nrt.ocir.io/nrcmxxv7sjse/ec_service_test:nodejs-${{ env.GITHUB_SHA }}' yq eval '.deployment.template.frontendImageA = env(IMAGE_TAG)' -i oke-test/values.yaml
 
-            - name: Create Pull Request
+            - name: Create Pull Request # プルリクエストの作成
               id: cpr
               uses: peter-evans/create-pull-request@v7
               with:
@@ -38,7 +38,7 @@ jobs:
                   base: main
                   delete-branch: true
 
-            - name: auto-merge
+            - name: auto-merge # プルリクエストの自動マージ
               env:
                   PR_URL: ${{steps.cpr.outputs.pull-request-url}}
                   GITHUB_PAT: ${{ secrets.REPO_ACCESS_TOKEN }}
