@@ -26,19 +26,6 @@ jobs:
               with:
                   cmd: IMAGE_TAG=' nrt.ocir.io/nrcmxxv7sjse/ec_service_test:nodejs-${{ env.GITHUB_SHA }}' yq eval '.deployment.template.frontendImageA = env(IMAGE_TAG)' -i oke-test/values.yaml
 
-            # - name: Commit and Push
-            #   env:
-            #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            #   run: |
-            #       BRANCH_NAME="bot/update-manifest--${{ env.GITHUB_SHA }}"
-            #       git config user.name "github-actions[bot]"
-            #       git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            #       git checkout -b "$BRANCH_NAME"
-            #       git add -A
-            #       git commit -m "dispatch commit"
-            #       git push origin "$BRANCH_NAME"
-            #       echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
-
             - name: Create Pull Request
               id: cpr
               uses: peter-evans/create-pull-request@v7
@@ -49,13 +36,14 @@ jobs:
                   body: "This PR was created automatically by GitHub Actions."
                   branch: bot/update-manifest--${{ env.GITHUB_SHA }}
                   base: main
+                  delete-branch: true
+                  labels: auto-merge
 
-            # - name: auto-merge
-            #   # if: github.event.pull_request.user.login == 'github-actions[bot]'
-            #   env:
-            #       PR_URL: ${{github.event.pull_request.html_url}}
-            #       GITHUB_PAT: ${{ secrets.REPO_ACCESS_TOKEN }}
-            #   run: |
-            #       echo "$GITHUB_PAT" | gh auth login --with-token
-            #       gh pr review "$PR_URL" --approve
-            #       gh pr merge --merge --auto "$PR_URL"
+            - name: auto-merge
+              env:
+                  PR_URL: ${{github.event.pull_request.html_url}}
+                  GITHUB_PAT: ${{ secrets.REPO_ACCESS_TOKEN }}
+              run: |
+                  echo "$GITHUB_PAT" | gh auth login --with-token
+                  gh pr review "$PR_URL" --approve
+                  gh pr merge --merge --auto "$PR_URL"
