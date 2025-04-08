@@ -7,7 +7,7 @@ namespace:
 deployment:
   replicaCount: 1
   template:
-    frontendImageA: nrt.ocir.io/nrcmxxv7sjse/ec_service_test:nodejs-e7ae3bab5fd0a595ece250fce89189e2edffe59f
+    frontendImageA: nrt.ocir.io/nrcmxxv7sjse/ec_service_test:nodejs-f6b94af962f1461705197040daf516f38f12c95d
     backendImage: python:3.8-alpine
     backendCommand: ["python", "-m", "http.server", "5000"]
 #ラベルの設定を記載
